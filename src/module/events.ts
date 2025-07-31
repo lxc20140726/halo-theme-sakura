@@ -1,11 +1,45 @@
 import { documentFunction, sakura } from "../main";
 import { WindowEventProxy } from "../utils/eventProxy";
+import { PjaxAuthInterceptor } from "../utils/pjaxAuthInterceptor";
 declare const SearchWidget: any;
 
 /**
  * 全局事件模块
  */
 export class Events {
+  /**
+   * 初始化认证拦截器
+   */
+  @documentFunction(false)
+  public initAuthInterceptor() {
+    // 检查是否启用认证拦截
+    const enableAuthInterceptor = sakura.getThemeConfig("security", "enable_auth_interceptor", Boolean)?.valueOf();
+    
+    if (enableAuthInterceptor) {
+      const pjaxAuthInterceptor = PjaxAuthInterceptor.getInstance();
+      pjaxAuthInterceptor.init();
+      
+      // 拦截链接点击
+      pjaxAuthInterceptor.interceptLinks();
+      
+      // 拦截表单提交
+      pjaxAuthInterceptor.interceptForms();
+      
+      // 挂载调试方法到全局
+      const authInterceptor = pjaxAuthInterceptor.getAuthInterceptor();
+      if (typeof window !== 'undefined') {
+        (window as any).authInterceptorDebug = {
+          refresh: () => authInterceptor.refreshAuthStatus(),
+          getStatus: () => authInterceptor.getAuthStatus(),
+          getDebugInfo: () => authInterceptor.getDebugInfo(),
+          setStatus: (status: boolean) => authInterceptor.updateAuthStatus(status)
+        };
+      }
+      
+      console.log('认证拦截器已启用');
+      console.log('调试命令: window.authInterceptorDebug');
+    }
+  }
   /**
    * 注册搜索事件，兼容搜索组件 2.3.x 及以下版本
    *

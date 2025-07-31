@@ -1128,3 +1128,29 @@ spec:
           label: 备案模式
           value: false
           help: 备案模式，开启之后将隐藏所有留言、评论功能
+    - group: security
+      label: 安全设置
+      formSchema:
+        - $formkit: checkbox
+          name: enable_auth_interceptor
+          label: 启用认证拦截器
+          value: false
+          help: 启用后，未登录用户将被重定向到登录页面
+        - $formkit: text
+          if: "$get(enable_auth_interceptor).value == true"
+          name: login_url
+          label: 登录页面URL
+          value: "/login"
+          help: 用户未登录时重定向的登录页面地址
+        - $formkit: textarea
+          if: "$get(enable_auth_interceptor).value == true"
+          name: allowed_paths
+          label: 允许访问的路径
+          value: "/login,/register,/forgot-password,/api,/assets,/static"
+          help: 未登录用户允许访问的路径，多个路径用逗号分隔
+        - $formkit: textarea
+          if: "$get(enable_auth_interceptor).value == true"
+          name: excluded_paths
+          label: 排除的路径
+          value: "/api,/assets,/static"
+          help: 完全排除认证检查的路径，多个路径用逗号分隔

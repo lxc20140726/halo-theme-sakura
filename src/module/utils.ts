@@ -254,7 +254,7 @@ export class Utils {
     const headerOffset = 75;
     tocContainerElements?.forEach((tocContainerElement) => {
       import("tocbot").then((tocbot) => {
-        const tocElement = tocContainerElement.querySelector(".toc");
+        const tocElement = tocContainerElement.querySelector(".toc") as HTMLElement;
         const offset = tocContainerElement.getBoundingClientRect().top + window.pageYOffset;
         const collapseDepth = sakura.getThemeConfig("post", "toc_depth", Number)?.valueOf();
         if (!tocElement) {
