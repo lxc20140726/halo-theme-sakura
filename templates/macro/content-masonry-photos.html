@@ -33,22 +33,48 @@
             class="gallery-item"
             th:classappend="|group-${#strings.trim(photo.spec.groupName)} col-${theme.config.photos.masonry_column}|"
           >
-            <header class="gallery-icon">
-              <img
-                class="lazyload"
-                th:src="${#strings.isEmpty(photo.spec.cover) ? #theme.assets('/images/load/load.gif') : photo.spec.cover}"
-                th:alt="${photo.spec.displayName}"
-                th:data-src="${photo.spec.url}"
-                height="500"
-                width="500"
-              />
-            </header>
-            <figcaption class="gallery-caption">
-              <div class="entry-summary">
-                <h3 th:text="${photo.spec.displayName}"></h3>
-                <p th:if="${not #strings.isEmpty(photo.spec.description)}" th:text="${photo.spec.description}"></p>
-              </div>
-            </figcaption>
+            <a 
+              th:if="${#annotations.contains(photo, 'archive-slug') and not #strings.isEmpty(#annotations.get(photo, 'archive-slug'))}"
+              th:href="@{/archives/{slug}(slug=${#annotations.get(photo, 'archive-slug')})}"
+              class="photo-archive-link"
+              data-pjax
+              title="点击跳转到相关文章">
+              <header class="gallery-icon">
+                <img
+                  class="lazyload"
+                  th:src="${#strings.isEmpty(photo.spec.cover) ? #theme.assets('/images/load/load.gif') : photo.spec.cover}"
+                  th:alt="${photo.spec.displayName}"
+                  th:data-src="${photo.spec.url}"
+                  height="500"
+                  width="500"
+                />
+              </header>
+              <figcaption class="gallery-caption">
+                <div class="entry-summary">
+                  <h3 th:text="${photo.spec.displayName}"></h3>
+                  <p th:if="${not #strings.isEmpty(photo.spec.description)}" th:text="${photo.spec.description}"></p>
+                </div>
+              </figcaption>
+            </a>
+            <div 
+              th:unless="${#annotations.contains(photo, 'archive-slug') and not #strings.isEmpty(#annotations.get(photo, 'archive-slug'))}">
+              <header class="gallery-icon">
+                <img
+                  class="lazyload"
+                  th:src="${#strings.isEmpty(photo.spec.cover) ? #theme.assets('/images/load/load.gif') : photo.spec.cover}"
+                  th:alt="${photo.spec.displayName}"
+                  th:data-src="${photo.spec.url}"
+                  height="500"
+                  width="500"
+                />
+              </header>
+              <figcaption class="gallery-caption">
+                <div class="entry-summary">
+                  <h3 th:text="${photo.spec.displayName}"></h3>
+                  <p th:if="${not #strings.isEmpty(photo.spec.description)}" th:text="${photo.spec.description}"></p>
+                </div>
+              </figcaption>
+            </div>
           </figure>
         </th:block>
       </div>
